@@ -1,345 +1,350 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Plan Megatlon — Cande</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); }
-.app { padding: 1rem; max-width: 480px; margin: 0 auto; }
-.header { background: #1a1a2e; color: white; border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
-.header h1 { font-size: 18px; font-weight: 500; }
-.header p { font-size: 12px; opacity: 0.7; margin-top: 2px; }
-.week-nav { display: flex; align-items: center; justify-content: space-between; background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.5rem 0.75rem; margin-bottom: 1rem; border: 0.5px solid var(--color-border-tertiary); }
-.week-nav button { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--color-text-primary); padding: 0 4px; }
-.week-nav span { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
-.day-tabs { display: flex; gap: 6px; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 2px; }
-.day-tab { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; }
-.day-tab.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
-.day-tab.done { border-color: #0F6E56; color: #0F6E56; }
-.section-title { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.5rem; }
-.exercise-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 0.75rem 1rem; margin-bottom: 8px; }
-.ex-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 0; }
-.ex-num { background: #1a1a2e; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
-.ex-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); flex: 1; line-height: 1.3; }
-.ex-meta { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
-.ex-note { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; font-style: italic; }
-.series-grid { margin-top: 10px; }
-.series-row { display: grid; grid-template-columns: 60px repeat(4, 1fr); gap: 4px; align-items: center; margin-bottom: 4px; }
-.series-label { font-size: 11px; color: var(--color-text-secondary); }
-.serie-cell { text-align: center; }
-.serie-header { font-size: 11px; color: var(--color-text-tertiary); text-align: center; }
-.kg-input { width: 100%; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; padding: 4px; font-size: 13px; text-align: center; background: var(--color-background-secondary); color: var(--color-text-primary); font-family: var(--font-sans); }
-.kg-input:focus { outline: none; border-color: #1a1a2e; }
-.reps-val { font-size: 13px; color: var(--color-text-primary); }
-.cardio-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 0.75rem 1rem; margin-bottom: 8px; }
-.cardio-tag { font-size: 11px; background: #E1F5EE; color: #0F6E56; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
-.save-btn { width: 100%; padding: 12px; background: #1a1a2e; color: white; border: none; border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 1rem; }
-.save-btn:active { opacity: 0.85; }
-.progress-section { margin-top: 1.5rem; }
-.progress-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 0.75rem 1rem; margin-bottom: 8px; }
-.progress-ex-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
-.progress-weeks { display: flex; gap: 4px; flex-wrap: wrap; }
-.week-dot { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 36px; }
-.week-dot-label { font-size: 10px; color: var(--color-text-tertiary); }
-.week-dot-val { font-size: 12px; font-weight: 500; color: var(--color-text-primary); background: var(--color-background-secondary); border-radius: 6px; padding: 2px 6px; border: 0.5px solid var(--color-border-tertiary); min-width: 36px; text-align: center; }
-.week-dot-val.has-data { background: #E1F5EE; color: #0F6E56; border-color: #9FE1CB; }
-.tabs-main { display: flex; gap: 0; margin-bottom: 1rem; border-radius: var(--border-radius-md); overflow: hidden; border: 0.5px solid var(--color-border-secondary); }
-.tab-main { flex: 1; padding: 8px; font-size: 13px; border: none; background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; }
-.tab-main.active { background: #1a1a2e; color: white; }
-.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1D9E75; color: white; padding: 10px 20px; border-radius: var(--border-radius-md); font-size: 13px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
-.toast.show { opacity: 1; }
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
-.stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem; text-align: center; }
-.stat-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
-.stat-label { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f4f0; min-height: 100vh; }
+  .app { padding: 1rem; max-width: 480px; margin: 0 auto; padding-bottom: 3rem; }
+  .header { background: #1a1a2e; color: white; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .header h1 { font-size: 18px; font-weight: 600; }
+  .header p { font-size: 12px; opacity: 0.65; margin-top: 3px; }
+  .tabs-main { display: flex; border-radius: 10px; overflow: hidden; border: 1px solid #ddd; margin-bottom: 1rem; background: #eee; }
+  .tab-main { flex: 1; padding: 9px; font-size: 13px; border: none; background: transparent; cursor: pointer; color: #666; font-weight: 500; }
+  .tab-main.active { background: #1a1a2e; color: white; border-radius: 9px; }
+  .week-nav { display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 10px; padding: 0.5rem 0.75rem; margin-bottom: 1rem; border: 1px solid #e0e0e0; }
+  .week-nav button { background: none; border: none; font-size: 22px; cursor: pointer; color: #1a1a2e; padding: 0 4px; line-height: 1; }
+  .week-nav span { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+  .day-tabs { display: flex; gap: 6px; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+  .day-tab { flex-shrink: 0; padding: 7px 14px; border-radius: 20px; font-size: 13px; border: 1px solid #ccc; background: white; cursor: pointer; color: #666; font-weight: 500; }
+  .day-tab.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+  .section-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin: 1rem 0 0.5rem; }
+  .exercise-card { background: white; border: 1px solid #e8e8e8; border-radius: 14px; padding: 0.75rem 1rem; margin-bottom: 8px; }
+  .ex-header { display: flex; align-items: flex-start; gap: 8px; }
+  .ex-num { background: #1a1a2e; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+  .ex-name { font-size: 14px; font-weight: 600; color: #1a1a2e; flex: 1; line-height: 1.35; }
+  .ex-note { font-size: 11px; color: #999; margin-top: 4px; font-style: italic; }
+  .ex-tip { font-size: 12px; color: #5a7a6a; background: #f0faf6; border-left: 3px solid #1D9E75; border-radius: 0 8px 8px 0; padding: 6px 10px; margin-top: 8px; line-height: 1.5; }
+  .tip-toggle { font-size: 11px; color: #1D9E75; background: none; border: none; cursor: pointer; padding: 4px 0 0; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+  .series-grid { margin-top: 10px; }
+  .series-row { display: grid; gap: 4px; align-items: center; margin-bottom: 4px; }
+  .series-label { font-size: 11px; color: #888; }
+  .serie-header { font-size: 11px; color: #bbb; text-align: center; }
+  .kg-input { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 6px 4px; font-size: 14px; text-align: center; background: #f9f9f7; color: #1a1a2e; font-family: inherit; -webkit-appearance: none; }
+  .kg-input:focus { outline: none; border-color: #1a1a2e; background: white; }
+  .reps-val { font-size: 13px; color: #444; text-align: center; }
+  .cardio-card { background: #f0faf6; border: 1px solid #b8e8d4; border-radius: 14px; padding: 0.75rem 1rem; margin-bottom: 8px; }
+  .cardio-tag { font-size: 11px; background: #1D9E75; color: white; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .save-btn { width: 100%; padding: 13px; background: #1a1a2e; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 1rem; -webkit-tap-highlight-color: transparent; }
+  .save-btn:active { opacity: 0.8; }
+  .progress-card { background: white; border: 1px solid #e8e8e8; border-radius: 14px; padding: 0.75rem 1rem; margin-bottom: 8px; }
+  .progress-ex-name { font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; }
+  .progress-weeks { display: flex; gap: 6px; flex-wrap: wrap; }
+  .week-dot { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .week-dot-label { font-size: 10px; color: #aaa; font-weight: 600; }
+  .week-dot-val { font-size: 12px; font-weight: 600; color: #888; background: #f4f4f0; border-radius: 8px; padding: 3px 7px; border: 1px solid #e0e0e0; min-width: 38px; text-align: center; }
+  .week-dot-val.has-data { background: #e8f8f2; color: #0F6E56; border-color: #9FE1CB; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
+  .stat-card { background: white; border-radius: 12px; padding: 0.85rem; text-align: center; border: 1px solid #e8e8e8; }
+  .stat-val { font-size: 26px; font-weight: 700; color: #1a1a2e; }
+  .stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1D9E75; color: white; padding: 11px 22px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+  .toast.show { opacity: 1; }
+  .clear-btn { width: 100%; padding: 11px; background: white; color: #888; border: 1px solid #ddd; border-radius: 10px; font-size: 13px; cursor: pointer; margin-top: 0.5rem; }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 </style>
-
+</head>
+<body>
 <div class="app">
-<div class="header">
-  <h1>Plan Megatlon — Mariana</h1>
-  <p>Entrenadora: Florencia Velazquez · Vigencia: 11/02 – 13/03/2026</p>
-</div>
-
-<div class="tabs-main">
-  <button class="tab-main active" onclick="showMainTab('workout')">Entrenamiento</button>
-  <button class="tab-main" onclick="showMainTab('progress')">Progreso</button>
-</div>
-
-<div id="tab-workout">
-  <div class="week-nav">
-    <button onclick="changeWeek(-1)">‹</button>
-    <span id="week-label">Semana 1</span>
-    <button onclick="changeWeek(1)">›</button>
+  <div class="header">
+    <h1>Plan Megatlon — Cande</h1>
+    <p>Entrenadora: Florencia Velazquez &nbsp;·&nbsp; 11/04 – 11/05/2026</p>
   </div>
-
-  <div class="day-tabs" id="day-tabs"></div>
-  <div id="workout-content"></div>
+  <div class="tabs-main">
+    <button class="tab-main active" onclick="showMainTab('workout')">Entrenamiento</button>
+    <button class="tab-main" onclick="showMainTab('progress')">Progreso</button>
+  </div>
+  <div id="tab-workout">
+    <div class="week-nav">
+      <button onclick="changeWeek(-1)">‹</button>
+      <span id="week-label">Semana 1</span>
+      <button onclick="changeWeek(1)">›</button>
+    </div>
+    <div class="day-tabs" id="day-tabs"></div>
+    <div id="workout-content"></div>
+  </div>
+  <div id="tab-progress" style="display:none">
+    <div id="progress-content"></div>
+  </div>
 </div>
-
-<div id="tab-progress" style="display:none">
-  <div id="progress-content"></div>
-</div>
-</div>
-
 <div class="toast" id="toast">✓ Guardado</div>
 
 <script>
 const DAYS = {
-  'Pecho + Hombros': {
-    blocks: [
-      { name: 'Movilidad', sets: 2, exercises: [
-        { num:1, name:'Rotación interna de hombro con banda', reps:[12,12], kg:false },
-        { num:2, name:'Rotación externa de hombro con banda', reps:[12,12], kg:false },
-        { num:3, name:'Mariposa con banda', reps:[10,10], kg:false, note:'Parado, desde el medio y unilateral, luego del medio hacia arriba' }
-      ]},
-      { name: 'Entrada en calor', sets: 2, exercises: [
-        { num:4, name:'Cinta – método continuo', reps:['3 min','3 min'], kg:false, note:'PSE 6', cardio:true },
-        { num:5, name:'Plancha prona alta + toque de hombros', reps:[10,10], kg:false },
-        { num:6, name:'Empuje de pecho con barra en banco plano (toma cerrada)', reps:[10,8,6,4], kg:true, note:'Aumentar peso al bajar repeticiones' }
-      ]},
-      { name: 'Bloque 1', sets: 3, exercises: [
-        { num:7, name:'Cruce de pecho con poleas bajas', reps:[10,10,10], kg:true },
-        { num:8, name:'Vuelos frontales en polea', reps:[10,10,10], kg:true, note:'Agarre supino' }
-      ]},
-      { name: 'Bloque 2', sets: 3, exercises: [
-        { num:9, name:'Empuje de hombros con barra (sentado)', reps:[10,10,10], kg:true },
-        { num:10, name:'Vuelos laterales en polea', reps:[8,8,8], kg:true }
-      ]},
-      { name: 'Bloque 3', sets: 3, exercises: [
-        { num:11, name:'Vuelos frontales en polea (prono)', reps:[10,10,10], kg:true, note:'PRONO' },
-        { num:12, name:'Vuelos laterales con mancuernas', reps:[8,8,8], kg:true, note:'Uno en isometría' }
-      ]}
-    ]
-  },
-  'Glúteos + Cuádriceps': {
-    blocks: [
-      { name: 'Cardio inicial', sets: 1, exercises: [
-        { num:1, name:'Cinta – método continuo', reps:['6 min'], kg:false, note:'PSE 8 · Inclinación 4', cardio:true }
-      ]},
-      { name: 'Bloque 1', sets: 3, exercises: [
-        { num:2, name:'Prensa Hammer 45°', reps:[10,10,10], kg:true },
-        { num:3, name:'Desplazamiento lateral con banda', reps:[30,30,30], kg:false, note:'15/15 · puede ser sentadilla isométrica 30 seg' }
-      ]},
-      { name: 'Bloque 2', sets: 3, exercises: [
-        { num:4, name:'Hip Thrust con barra', reps:[10,10,10], kg:true },
-        { num:5, name:'Estocada en banco', reps:[8,8,8], kg:false },
-        { num:6, name:'Sentadilla clásica', reps:[10,8,6,4], kg:true, note:'Aumentar peso al bajar repeticiones' }
-      ]}
-    ]
-  },
-  'Brazos + Core': {
-    blocks: [
-      { name: 'Entrada en calor (zona media)', sets: 3, exercises: [
-        { num:1, name:'Abdominales oblicuos en suspensión', reps:[10,10,10], kg:false, note:'10/10' },
-        { num:2, name:'Escalador de montaña', reps:[30,30,30], kg:false },
-        { num:3, name:'Abdominal recto largo en banco', reps:[15,15,15], kg:false },
-        { num:4, name:'Abdominal recto corto en banco', reps:[15,15,15], kg:false }
-      ]},
-      { name: 'Bloque 1 – Bíceps', sets: 3, exercises: [
-        { num:5, name:'Bíceps con polea', reps:[12,12,12], kg:true },
-        { num:6, name:'Bíceps con polea (isométrico)', reps:[10,10,10], kg:true, note:'Isométrico 10 segundos' }
-      ]},
-      { name: 'Bloque 3 – Tríceps', sets: 3, exercises: [
-        { num:7, name:'Tríceps patada de burro', reps:[12,12,12], kg:true },
-        { num:8, name:'Fondos en paralelas', reps:[12,12,12], kg:false }
-      ]},
-      { name: 'Bloque 4 – Tríceps', sets: 3, exercises: [
-        { num:9, name:'Press francés con barra Ez', reps:[10,8,6], kg:true, note:'Aumentar peso' },
-        { num:10, name:'Flexo-extensión de brazos (tríceps)', reps:[10,10,10], kg:false }
-      ]}
-    ]
-  }
+  'Espalda + Tríceps': { blocks: [
+    { name: 'Warm up', sets: 2, exercises: [
+      { num:1, name:'Escalador de montaña', reps:[40,40], kg:false,
+        tip:'Posición de plancha alta firme, caderas alineadas con el cuerpo. Llevá las rodillas al pecho de forma alternada y controlada, sin elevar ni hundir la cadera.' },
+      { num:2, name:'Espinales en colchoneta', reps:[15,15], kg:false,
+        tip:'Boca abajo, brazos extendidos al frente o al costado. Elevá pecho y piernas del suelo simultáneamente apretando la zona lumbar. Subí lento y bajá con control.' },
+      { num:3, name:'Abdominales isométricos con balanceo adelante y atrás', reps:[15,15], kg:false,
+        tip:'Sentada con rodillas dobladas y espalda levemente inclinada. Mantené el core contraído mientras balanceás el torso hacia atrás y adelante de forma controlada.' },
+      { num:4, name:'Tirón dorsal en polea con agarre prono', reps:[10,8,6], kg:true,
+        tip:'Sentada, agarre con palmas hacia abajo. Tirá la barra hacia el pecho llevando los codos hacia abajo y atrás. Abrí el pecho en la bajada, no uses el impulso.' }
+    ]},
+    { name: 'Bloque 1', sets: 3, exercises: [
+      { num:5, name:'Remo a un brazo', reps:[8,8,8], kg:true, note:'8/8',
+        tip:'Apoyá una rodilla y mano en el banco, espalda paralela al suelo. Llevá la mancuerna hacia la cadera (no al hombro), codo pegado al cuerpo. Controlá la bajada.' },
+      { num:6, name:'Depresores en polea', reps:[8,8,8], kg:true,
+        tip:'De pie o sentada frente a la polea alta. Con brazos casi extendidos, empujá hacia abajo activando los dorsales y bajando los omóplatos. Evitá encorvar la espalda.' },
+      { num:7, name:'Press francés', reps:[8,6,4], kg:true,
+        tip:'Acostada en el banco, barra Ez sobre la frente. Doblá solo los codos llevando la barra hacia atrás de la cabeza. Los codos apuntan al techo y no se abren.' }
+    ]},
+    { name: 'Bloque 2', sets: 3, exercises: [
+      { num:8, name:'Tríceps con polea (agarre supino)', reps:[8,8,8], kg:true,
+        tip:'Palmas hacia arriba agarrando la cuerda o barra. Codos pegados al cuerpo y fijos. Extendé los brazos hacia abajo completamente y volvé lento.' },
+      { num:9, name:'Tríceps con polea 2', reps:[8,8,8], kg:true,
+        tip:'Variación de agarre o posición. Mantené los codos fijos al costado del torso. El movimiento es solo de codo para abajo, sin balancear el cuerpo.' }
+    ]},
+    { name: 'Bloque 3', sets: 3, exercises: [
+      { num:10, name:'Tirón dorsal en polea con agarre neutro', reps:[8,8,8], kg:true, note:'Pesado',
+        tip:'Palmas enfrentadas. Tirá con los codos hacia abajo y afuera, llevando la barra al pecho superior. Abrí bien el pecho al estirar y contraé los dorsales al bajar.' },
+      { num:11, name:'Tríceps patada de burro', reps:[10,10,10], kg:true,
+        tip:'Inclinada hacia adelante, codo fijo a 90°. Extendé el brazo completamente hacia atrás hasta quedar paralelo al suelo. Apretá el tríceps en la extensión máxima.' }
+    ]},
+    { name: 'Cardio final', sets: 1, exercises: [
+      { num:12, name:'Remo – método continuo', reps:['5 min'], kg:false, note:'500 m', cardio:true,
+        tip:'Empuje con las piernas primero, luego recliná el torso atrás y finalmente tirá con los brazos. La secuencia inversa al volver: brazos, torso, rodillas.' }
+    ]}
+  ]},
+
+  'Glúteos': { blocks: [
+    { name: 'Activación', sets: 2, exercises: [
+      { num:1, name:'Walkout o cuerpo a tierra', reps:[8,8], kg:false,
+        tip:'De pie, bajá las manos al suelo y caminá hasta plancha. Podés agregar una flexión. Volvé caminando con las manos hacia los pies y subí. Movimiento continuo y controlado.' },
+      { num:2, name:'Puente supino', reps:['10 seg','10 seg'], kg:false, note:'Con peso + isometría 15 seg',
+        tip:'Acostada, pies apoyados. Elevá la cadera apretando los glúteos al máximo. Mantené la posición sin dejar caer las caderas. La fuerza viene de los glúteos, no de la espalda.' },
+      { num:3, name:'Abdominales isométricos con balanceo adelante y atrás', reps:[15,15], kg:false,
+        tip:'Core contraído todo el tiempo. El balanceo es mínimo y controlado, no un movimiento brusco. Sentí la tensión abdominal durante todo el ejercicio.' },
+      { num:4, name:'Hip Thrust con barra', reps:[10,10,8,6], kg:true, note:'Aumento de peso + 6 rebotes en cada serie',
+        tip:'Espalda apoyada en el banco a la altura de los omóplatos. Empujá la cadera hacia arriba con los glúteos, rodillas a 90°. Al final de cada serie hacé 6 rebotes pequeños sin bajar del todo.' }
+    ]},
+    { name: 'Bloque 1', sets: 3, exercises: [
+      { num:5, name:'Glúteos con pierna flexionada en polea', reps:[10,10,10], kg:true, note:'10/10',
+        tip:'De pie frente a la polea baja con tobillera. Pierna ligeramente doblada, empujá hacia atrás y arriba activando el glúteo. No arquées la espalda lumbar al subir.' },
+      { num:6, name:'Glúteos con pierna flexionada en polea (diagonal)', reps:[10,10,10], kg:true, note:'Diagonal',
+        tip:'Igual que el anterior pero llevá la pierna en diagonal hacia afuera. Activás más el glúteo medio. Mantené el tronco estable y no te inclines hacia el costado.' }
+    ]},
+    { name: 'Bloque 2', sets: 4, exercises: [
+      { num:7, name:'Sentadilla copa', reps:[10,10,8,8], kg:true, note:'Aumento de peso',
+        tip:'Pies separados a la altura de hombros, mancuerna sostenida con ambas manos frente al pecho. Bajá con la espalda recta y rodillas hacia afuera. Subí empujando desde los talones.' },
+      { num:8, name:'Subidas al banco', reps:[8,8,8,8], kg:false, note:'Subida a una pierna desde glúteos · 8/8',
+        tip:'Apoyá un pie completamente en el banco. Empujá desde el talón de la pierna de arriba (no te impulses con la de abajo). Bajá lento y controlado.' }
+    ]},
+    { name: 'Bloque 3', sets: 3, exercises: [
+      { num:9, name:'Hip thrust a una pierna', reps:[8,8,8], kg:true, note:'8/8 · con banda circular',
+        tip:'Igual que el hip thrust normal pero con una pierna extendida. La banda justo sobre las rodillas. Apretá el glúteo de la pierna de apoyo al máximo arriba.' },
+      { num:10, name:'Peso muerto a una pierna con barra', reps:[8,8,8], kg:true, note:'8/8',
+        tip:'De pie sobre una pierna, bajá la barra por delante de la pierna de apoyo mientras el cuerpo y la pierna libre forman una línea. Sentí el estiramiento del isquiotibial. Volvé empujando desde el glúteo.' }
+    ]}
+  ]},
+
+  'Pecho + Bíceps + Hombros': { blocks: [
+    { name: 'Cardio inicial', sets: 1, exercises: [
+      { num:1, name:'Elíptico – método continuo', reps:['8 min'], kg:false, note:'Por frecuencia cardíaca', cardio:true,
+        tip:'Postura erguida, no te apoyes en los manubrios. Empujá y tirá con los brazos activamente. Mantené un ritmo constante que eleve tu frecuencia cardíaca pero te permita hablar.' }
+    ]},
+    { name: 'Core', sets: 3, exercises: [
+      { num:2, name:'Puente dinámico con rueda', reps:[10,10,10], kg:false,
+        tip:'Rodillas en el suelo, rueda frente a vos. Empujá hacia adelante manteniendo el core muy apretado. No dejés caer la cadera. Volvé activando el abdomen, no la espalda baja.' },
+      { num:3, name:'Puente dinámico con rueda (diagonal)', reps:[10,10,10], kg:false, note:'Diagonal',
+        tip:'Igual que el anterior pero llevá la rueda en diagonal hacia un lado. Alternás izquierda y derecha. El core trabaja de forma asimétrica, más oblicuos.' }
+    ]},
+    { name: 'Entrada + ejercicio base', sets: 1, exercises: [
+      { num:4, name:'Empuje de pecho con barra en banco plano (toma cerrada)', reps:[10,10,8,8], kg:true,
+        tip:'Agarre más angosto que el hombro. Los codos van pegados al cuerpo (no abiertos). Trabajás más el tríceps y la parte interna del pecho. Bajá la barra al esternón con control.' }
+    ]},
+    { name: 'Bloque 1', sets: 3, exercises: [
+      { num:5, name:'Empuje de hombros con barra (parado)', reps:[10,10,10], kg:true,
+        tip:'De pie, barra a la altura de los hombros. Empujá hacia arriba sin arquear la espalda lumbar. Apretá el abdomen durante todo el movimiento. Bajá lento.' },
+      { num:6, name:'Bíceps + Vuelos laterales', reps:[8,8,8], kg:true,
+        tip:'Combinación: curl de bíceps y vuelo lateral en el mismo movimiento o alternados. En el vuelo lateral levantá los brazos hasta la altura del hombro con codos levemente doblados. Controlá la bajada.' },
+      { num:7, name:'Apertura de pecho con mancuernas en banco plano', reps:[10,10,10], kg:true,
+        tip:'Brazos extendidos arriba, bajá abriendo los brazos en arco hasta sentir el estiramiento del pecho. Codos levemente doblados durante todo el movimiento. Subí como si abrazaras un árbol grande.' },
+      { num:8, name:'Empuje de pecho en Hammer', reps:[10,8,6], kg:true, note:'Aumento de peso',
+        tip:'Sentada en la máquina, espalda apoyada. Empujá al frente sin despegar la espalda del respaldo. Controlá la vuelta para no rebotar en el punto de máxima apertura.' },
+      { num:9, name:'Vuelos frontales con mancuernas', reps:[8,8,8], kg:true,
+        tip:'De pie o sentada, levantá los brazos al frente hasta la altura del hombro con codos levemente doblados. Bajá lento. No uses impulso del cuerpo, el movimiento es solo del hombro.' }
+    ]},
+    { name: 'Bloque 2', sets: 3, exercises: [
+      { num:10, name:'Vuelos frontales en polea', reps:[10,10,10], kg:true, note:'Agarre supino',
+        tip:'Palmas hacia arriba agarrando la polea baja. Levantá los brazos al frente hasta la altura del hombro. El agarre supino activa más el deltoides anterior. Controlá todo el recorrido.' },
+      { num:11, name:'Bíceps en polea a un brazo', reps:[8,8,8], kg:true, note:'8/8',
+        tip:'De pie frente a la polea baja. Codo fijo al costado del cuerpo. Curlá hasta contraer el bíceps completamente arriba. Bajá lento sin soltar la tensión de la polea.' }
+    ]}
+  ]}
 };
 
 const DAY_KEYS = Object.keys(DAYS);
 let currentWeek = 1;
 let currentDay = DAY_KEYS[0];
-let activeMainTab = 'workout';
 const MAX_WEEKS = 5;
 
-function storageKey(week, day, exNum, serie) {
-  return `mg_w${week}_${day}_ex${exNum}_s${serie}`;
-}
+function sk(w,d,n,s){ return 'mgc_w'+w+'_'+d+'_ex'+n+'_s'+s; }
+function getKg(w,d,n,s){ try{ return localStorage.getItem(sk(w,d,n,s))||''; }catch(e){ return ''; } }
+function setKg(w,d,n,s,v){ try{ localStorage.setItem(sk(w,d,n,s),v); }catch(e){} }
 
-function getKg(week, day, exNum, serie) {
-  try { return localStorage.getItem(storageKey(week, day, exNum, serie)) || ''; } catch(e) { return ''; }
-}
-function setKg(week, day, exNum, serie, val) {
-  try { localStorage.setItem(storageKey(week, day, exNum, serie), val); } catch(e) {}
-}
-
-function showMainTab(tab) {
-  activeMainTab = tab;
-  document.getElementById('tab-workout').style.display = tab === 'workout' ? '' : 'none';
-  document.getElementById('tab-progress').style.display = tab === 'progress' ? '' : 'none';
-  document.querySelectorAll('.tab-main').forEach((b,i) => {
-    b.classList.toggle('active', (i===0 && tab==='workout') || (i===1 && tab==='progress'));
+function showMainTab(tab){
+  document.getElementById('tab-workout').style.display = tab==='workout'?'':'none';
+  document.getElementById('tab-progress').style.display = tab==='progress'?'':'none';
+  document.querySelectorAll('.tab-main').forEach((b,i)=>{
+    b.classList.toggle('active',(i===0&&tab==='workout')||(i===1&&tab==='progress'));
   });
-  if (tab === 'progress') renderProgress();
+  if(tab==='progress') renderProgress();
 }
 
-function changeWeek(delta) {
-  currentWeek = Math.max(1, Math.min(MAX_WEEKS, currentWeek + delta));
+function changeWeek(d){
+  currentWeek = Math.max(1,Math.min(MAX_WEEKS,currentWeek+d));
   render();
 }
 
-function render() {
-  document.getElementById('week-label').textContent = `Semana ${currentWeek}`;
+function render(){
+  document.getElementById('week-label').textContent='Semana '+currentWeek;
   renderDayTabs();
   renderWorkout();
 }
 
-function renderDayTabs() {
-  const container = document.getElementById('day-tabs');
-  container.innerHTML = '';
-  DAY_KEYS.forEach(day => {
-    const btn = document.createElement('button');
-    btn.className = 'day-tab' + (day === currentDay ? ' active' : '');
-    btn.textContent = day;
-    btn.onclick = () => { currentDay = day; renderDayTabs(); renderWorkout(); };
-    container.appendChild(btn);
+function renderDayTabs(){
+  const c=document.getElementById('day-tabs');
+  c.innerHTML='';
+  DAY_KEYS.forEach(day=>{
+    const btn=document.createElement('button');
+    btn.className='day-tab'+(day===currentDay?' active':'');
+    btn.textContent=day;
+    btn.onclick=()=>{ currentDay=day; renderDayTabs(); renderWorkout(); };
+    c.appendChild(btn);
   });
 }
 
-function renderWorkout() {
-  const container = document.getElementById('workout-content');
-  const dayData = DAYS[currentDay];
-  let html = '';
-  
-  dayData.blocks.forEach(block => {
-    html += `<div class="section-title">${block.name} · ${block.sets} vueltas</div>`;
-    block.exercises.forEach(ex => {
-      if (ex.cardio) {
-        html += `<div class="cardio-card">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <span class="ex-num">${ex.num}</span>
-            <span class="ex-name">${ex.name}</span>
-            <span class="cardio-tag">cardio</span>
-          </div>
-          ${ex.note ? `<div class="ex-note">${ex.note}</div>` : ''}
-          <div style="margin-top:8px;display:flex;gap:8px;">
-            ${ex.reps.map(r => `<span style="font-size:13px;background:var(--color-background-primary);padding:4px 10px;border-radius:6px;border:0.5px solid var(--color-border-tertiary)">${r}</span>`).join('')}
-          </div>
-        </div>`;
+function toggleTip(id){
+  const el=document.getElementById(id);
+  const btn=document.getElementById('btn-'+id);
+  if(el.style.display==='none'){ el.style.display='block'; btn.textContent='▲ Ocultar tip'; }
+  else{ el.style.display='none'; btn.textContent='▼ Ver tip de técnica'; }
+}
+
+function renderWorkout(){
+  const c=document.getElementById('workout-content');
+  const dayData=DAYS[currentDay];
+  let html='';
+  dayData.blocks.forEach(block=>{
+    html+='<div class="section-title">'+block.name+' · '+block.sets+' vueltas</div>';
+    block.exercises.forEach(ex=>{
+      const tipId='tip-'+currentDay.replace(/\s/g,'')+'-'+ex.num;
+      if(ex.cardio){
+        html+='<div class="cardio-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+          +'<span class="ex-num">'+ex.num+'</span>'
+          +'<span class="ex-name">'+ex.name+'</span>'
+          +'<span class="cardio-tag">cardio</span></div>'
+          +(ex.note?'<div class="ex-note">'+ex.note+'</div>':'')
+          +'<div style="margin-top:8px;display:flex;gap:8px;">'
+          +ex.reps.map(r=>'<span style="font-size:13px;background:white;padding:4px 10px;border-radius:8px;border:1px solid #c8e8d8">'+r+'</span>').join('')
+          +'</div>'
+          +(ex.tip?'<button class="tip-toggle" id="btn-'+tipId+'" onclick="toggleTip(\''+tipId+'\')">▼ Ver tip de técnica</button>'
+            +'<div class="ex-tip" id="'+tipId+'" style="display:none">'+ex.tip+'</div>':'')
+          +'</div>';
         return;
       }
-
-      html += `<div class="exercise-card">
-        <div class="ex-header">
-          <span class="ex-num">${ex.num}</span>
-          <div style="flex:1">
-            <div class="ex-name">${ex.name}</div>
-            ${ex.note ? `<div class="ex-note">${ex.note}</div>` : ''}
-          </div>
-        </div>`;
-
-      if (ex.kg) {
-        html += `<div class="series-grid">
-          <div class="series-row">
-            <span class="series-label"></span>
-            ${ex.reps.map((_,i) => `<span class="serie-header">S${i+1}</span>`).join('')}
-          </div>
-          <div class="series-row">
-            <span class="series-label" style="font-size:11px;color:var(--color-text-secondary)">Reps</span>
-            ${ex.reps.map(r => `<span class="reps-val serie-cell">${r}</span>`).join('')}
-          </div>
-          <div class="series-row">
-            <span class="series-label" style="font-size:11px;color:var(--color-text-secondary)">Kg</span>
-            ${ex.reps.map((_,i) => `<input class="kg-input" type="number" min="0" step="0.5" placeholder="—" value="${getKg(currentWeek, currentDay, ex.num, i+1)}" data-week="${currentWeek}" data-day="${currentDay}" data-ex="${ex.num}" data-serie="${i+1}" oninput="onKgInput(this)">`).join('')}
-          </div>
-        </div>`;
-      } else {
-        html += `<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
-          ${ex.reps.map((r,i) => `<span style="font-size:12px;background:var(--color-background-secondary);padding:3px 8px;border-radius:6px;border:0.5px solid var(--color-border-tertiary)">S${i+1}: ${r} reps</span>`).join('')}
-        </div>`;
+      html+='<div class="exercise-card"><div class="ex-header">'
+        +'<span class="ex-num">'+ex.num+'</span>'
+        +'<div style="flex:1"><div class="ex-name">'+ex.name+'</div>'
+        +(ex.note?'<div class="ex-note">'+ex.note+'</div>':'')
+        +'</div></div>';
+      if(ex.tip){
+        html+='<button class="tip-toggle" id="btn-'+tipId+'" onclick="toggleTip(\''+tipId+'\')">▼ Ver tip de técnica</button>'
+          +'<div class="ex-tip" id="'+tipId+'" style="display:none">'+ex.tip+'</div>';
       }
-
-      html += `</div>`;
+      if(ex.kg){
+        html+='<div class="series-grid" style="margin-top:10px">'
+          +'<div class="series-row" style="grid-template-columns:52px repeat('+ex.reps.length+',1fr)">'
+          +'<span></span>'+ex.reps.map((_,i)=>'<span class="serie-header">S'+(i+1)+'</span>').join('')+'</div>'
+          +'<div class="series-row" style="grid-template-columns:52px repeat('+ex.reps.length+',1fr)">'
+          +'<span class="series-label">Reps</span>'+ex.reps.map(r=>'<span class="reps-val">'+r+'</span>').join('')+'</div>'
+          +'<div class="series-row" style="grid-template-columns:52px repeat('+ex.reps.length+',1fr)">'
+          +'<span class="series-label">Kg</span>'
+          +ex.reps.map((_,i)=>'<input class="kg-input" type="number" inputmode="decimal" min="0" step="0.5" placeholder="—" value="'+getKg(currentWeek,currentDay,ex.num,i+1)+'" data-w="'+currentWeek+'" data-d="'+currentDay+'" data-n="'+ex.num+'" data-s="'+(i+1)+'" oninput="onKg(this)">').join('')
+          +'</div></div>';
+      } else {
+        html+='<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">'
+          +ex.reps.map((r,i)=>'<span style="font-size:12px;background:#f4f4f0;padding:3px 10px;border-radius:8px;border:1px solid #e0e0e0">S'+(i+1)+': '+r+' reps</span>').join('')
+          +'</div>';
+      }
+      html+='</div>';
     });
   });
-
-  html += `<button class="save-btn" onclick="showToast()">Guardar semana ${currentWeek}</button>`;
-  container.innerHTML = html;
+  html+='<button class="save-btn" onclick="showToast(\'✓ Semana '+currentWeek+' guardada\')">Guardar semana '+currentWeek+'</button>';
+  c.innerHTML=html;
 }
 
-function onKgInput(input) {
-  setKg(input.dataset.week, input.dataset.day, input.dataset.ex, input.dataset.serie, input.value);
+function onKg(input){
+  setKg(input.dataset.w,input.dataset.d,input.dataset.n,input.dataset.s,input.value);
 }
 
-function showToast() {
-  const t = document.getElementById('toast');
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg||'✓ Guardado';
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  setTimeout(()=>t.classList.remove('show'),2000);
 }
 
-function renderProgress() {
-  const container = document.getElementById('progress-content');
-  
-  let totalSessions = 0;
-  for (let w = 1; w <= MAX_WEEKS; w++) {
-    DAY_KEYS.forEach(day => {
-      const dayData = DAYS[day];
-      let hasAny = false;
-      dayData.blocks.forEach(block => {
-        block.exercises.forEach(ex => {
-          if (ex.kg) {
-            const v = getKg(w, day, ex.num, 1);
-            if (v) hasAny = true;
-          }
-        });
-      });
-      if (hasAny) totalSessions++;
+function renderProgress(){
+  const c=document.getElementById('progress-content');
+  let sessions=0;
+  for(let w=1;w<=MAX_WEEKS;w++){
+    DAY_KEYS.forEach(day=>{
+      let any=false;
+      DAYS[day].blocks.forEach(b=>b.exercises.forEach(ex=>{ if(ex.kg&&getKg(w,day,ex.num,1)) any=true; }));
+      if(any) sessions++;
     });
   }
-
-  let html = `<div class="stats-grid">
-    <div class="stat-card"><div class="stat-val">${currentWeek}</div><div class="stat-label">Semana actual</div></div>
-    <div class="stat-card"><div class="stat-val">${totalSessions}</div><div class="stat-label">Entrenos con datos</div></div>
-  </div>`;
-
-  DAY_KEYS.forEach(day => {
-    const dayData = DAYS[day];
-    html += `<div class="section-title">${day}</div>`;
-    
-    dayData.blocks.forEach(block => {
-      block.exercises.forEach(ex => {
-        if (!ex.kg) return;
-        
-        const weekVals = [];
-        for (let w = 1; w <= MAX_WEEKS; w++) {
-          const vals = ex.reps.map((_,i) => parseFloat(getKg(w, day, ex.num, i+1))).filter(v => !isNaN(v) && v > 0);
-          weekVals.push(vals.length > 0 ? Math.max(...vals) : null);
+  let html='<div class="stats-grid">'
+    +'<div class="stat-card"><div class="stat-val">'+currentWeek+'</div><div class="stat-label">Semana actual</div></div>'
+    +'<div class="stat-card"><div class="stat-val">'+sessions+'</div><div class="stat-label">Días con datos</div></div>'
+    +'</div>';
+  DAY_KEYS.forEach(day=>{
+    let dayHtml='';
+    DAYS[day].blocks.forEach(block=>{
+      block.exercises.forEach(ex=>{
+        if(!ex.kg) return;
+        const vals=[];
+        for(let w=1;w<=MAX_WEEKS;w++){
+          const v=ex.reps.map((_,i)=>parseFloat(getKg(w,day,ex.num,i+1))).filter(x=>!isNaN(x)&&x>0);
+          vals.push(v.length?Math.max(...v):null);
         }
-        
-        const hasData = weekVals.some(v => v !== null);
-        if (!hasData) return;
-
-        html += `<div class="progress-card">
-          <div class="progress-ex-name">${ex.num}. ${ex.name}</div>
-          <div class="progress-weeks">
-            ${weekVals.map((v, i) => `
-              <div class="week-dot">
-                <span class="week-dot-label">S${i+1}</span>
-                <span class="week-dot-val ${v !== null ? 'has-data' : ''}">${v !== null ? v+'kg' : '—'}</span>
-              </div>`).join('')}
-          </div>
-        </div>`;
+        if(!vals.some(v=>v!==null)) return;
+        dayHtml+='<div class="progress-card"><div class="progress-ex-name">'+ex.num+'. '+ex.name+'</div>'
+          +'<div class="progress-weeks">'
+          +vals.map((v,i)=>'<div class="week-dot"><span class="week-dot-label">S'+(i+1)+'</span><span class="week-dot-val'+(v!==null?' has-data':'')+'">'+( v!==null?v+'kg':'—')+'</span></div>').join('')
+          +'</div></div>';
       });
     });
+    if(dayHtml) html+='<div class="section-title">'+day+'</div>'+dayHtml;
   });
-
-  html += `<button class="save-btn" style="background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-secondary);margin-top:0.5rem" onclick="clearAll()">Borrar todos los datos</button>`;
-  
-  container.innerHTML = html;
+  html+='<button class="clear-btn" onclick="clearAll()">Borrar todos los datos</button>';
+  c.innerHTML=html;
 }
 
-function clearAll() {
-  if (!confirm('¿Segura que querés borrar todos los registros?')) return;
-  try {
-    Object.keys(localStorage).filter(k => k.startsWith('mg_')).forEach(k => localStorage.removeItem(k));
-  } catch(e) {}
+function clearAll(){
+  if(!confirm('¿Segura que querés borrar todos los registros?')) return;
+  try{ Object.keys(localStorage).filter(k=>k.startsWith('mgc_')).forEach(k=>localStorage.removeItem(k)); }catch(e){}
   renderProgress();
-  showToast();
-  document.getElementById('toast').textContent = '✓ Datos borrados';
-  setTimeout(() => { document.getElementById('toast').textContent = '✓ Guardado'; }, 2200);
+  showToast('✓ Datos borrados');
 }
 
 render();
 </script>
+</body>
+</html>
